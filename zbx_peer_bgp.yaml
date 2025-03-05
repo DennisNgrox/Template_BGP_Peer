@@ -1,0 +1,104 @@
+zabbix_export:
+  version: '6.4'
+  template_groups:
+    - uuid: 7df96b18c230490a9a0a9e2307226338
+      name: Templates
+  templates:
+    - uuid: 82bde119a51f4e2099011d9545938627
+      template: Template_BGP
+      name: Template_BGP
+      groups:
+        - name: Templates
+      items:
+        - uuid: 557e1354f2e841399a815e94437949a5
+          name: 'BGP Version'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.2.1.15.1
+          key: bgp.version
+      discovery_rules:
+        - uuid: 9f763b4fda724dc28acd2dfac6c7e047
+          name: 'BGP State'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#IPADDRESS},.1.3.6.1.2.1.15.3.1.1]'
+          key: teste
+          delay: 1h
+          item_prototypes:
+            - uuid: f825acaa6c59407590d39061c8ac0615
+              name: 'BGP Peer Admin Status {#IPADDRESS}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.15.3.1.3.{#SNMPINDEX}'
+              key: 'adminstatus[{#IPADDRESS}]'
+              value_type: FLOAT
+            - uuid: 6bf9fc3ff4774b4bba5ef935fa51766e
+              name: 'BGP Peer Keep Alive {#IPADDRESS}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.15.3.1.19.{#SNMPINDEX}'
+              key: 'Alive[{#IPADDRESS}]'
+              units: s
+              description: 'O bgpPeerKeepAlive ajuda a garantir que a sessão BGP não seja considerada inativa e encerrada pelo peer devido à falta de comunicação.'
+            - uuid: 8e11ac1df57f47c58cd98fe2379a8c11
+              name: 'BGP Peer Connect Retry Interval {#IPADDRESS}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.15.3.1.17.{#SNMPINDEX}'
+              key: 'connectRetry[{#IPADDRESS}]'
+              units: s
+              description: 'O bgpPeerConnectRetryInterval é um parâmetro utilizado no protocolo BGP (Border Gateway Protocol) que define o intervalo de tempo entre as tentativas de reconexão de um peer BGP caso a conexão inicial ou a reconexão falhe.'
+            - uuid: 9b24ad3b82e143dcb9f156cf05da19ea
+              name: 'BGP Peer Established Time {#IPADDRESS}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.15.3.1.16.{#SNMPINDEX}'
+              key: 'EstabTime[{#IPADDRESS}]'
+              units: s
+              description: 'O bgpPeerFsmEstablishedTime é um parâmetro no protocolo BGP (Border Gateway Protocol) que representa o tempo que uma sessão BGP está no estado de "Estabelecida" (Established state). Esse tempo é medido desde o momento em que a sessão entre os peers BGP foi estabelecida com sucesso até o momento atual.'
+            - uuid: 056b340b74574572b6da4744b0639196
+              name: 'BGP Peer Local Address {#IPADDRESS}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.15.3.1.5.{#SNMPINDEX}'
+              key: 'localaddress[{#IPADDRESS}]'
+              value_type: TEXT
+              description: 'A definição básica de bgpPeerLocalAddr refere-se ao endereço IP local utilizado por um peer BGP (Border Gateway Protocol) durante o processo de troca de informações de roteamento. Em outras palavras, é o endereço IP local de uma das extremidades de uma sessão BGP.'
+            - uuid: e7c1dbfc6ef24f60bc2dd6d77dfed492
+              name: 'BGP Peer Local Port {#IPADDRESS}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.15.3.1.6.{#SNMPINDEX}'
+              key: 'localport[{#IPADDRESS}]'
+            - uuid: 0d9641de8aa547e68a71c92e73f84839
+              name: 'BGP Peer Remote AS {#IPADDRESS}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.15.3.1.9.{#SNMPINDEX}'
+              key: 'remoteAS[{#IPADDRESS}]'
+            - uuid: 2b5a7d2f9599400b86284a2f910d9682
+              name: 'BGP Peer State {#IPADDRESS}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.15.3.1.2.{#SNMPINDEX}'
+              key: 'state[{#IPADDRESS}]'
+              valuemap:
+                name: 'BGP State'
+            - uuid: df2563ea86564b4e948c4bc1f5af09d4
+              name: 'BGP Peer Total Messages Received {#IPADDRESS}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.15.3.1.12.{#SNMPINDEX}'
+              key: 'totalmsgIn[{#IPADDRESS}]'
+              description: 'O bgpPeerOutTotalMessages é um contador que representa o número total de mensagens Recebidas por um roteador BGP de um BGP específico.'
+            - uuid: 4092d73ebf8c40b5891a4da968e09125
+              name: 'BGP Peer Total Messages Sent {#IPADDRESS}'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.2.1.15.3.1.13.{#SNMPINDEX}'
+              key: 'totalmsgOut[{#IPADDRESS}]'
+              description: 'O bgpPeerOutTotalMessages é um contador que representa o número total de mensagens enviadas por um roteador BGP para um peer BGP específico.'
+      valuemaps:
+        - uuid: 1e64a570874d42748373c578df171beb
+          name: 'BGP State'
+          mappings:
+            - value: Idle
+              newvalue: '1'
+            - value: Connect
+              newvalue: '2'
+            - value: Active
+              newvalue: '3'
+            - value: OpenSent
+              newvalue: '4'
+            - value: OpenConfirm
+              newvalue: '5'
+            - value: Established
+              newvalue: '6'
